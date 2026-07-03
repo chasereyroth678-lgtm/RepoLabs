@@ -1,0 +1,38 @@
+# Render "Blueprint" file.
+#
+# What this does: if you connect this repo to Render and choose
+# "New > Blueprint" instead of "New > Web Service", Render reads this
+# file and sets up the web service for you automatically.
+#
+# Data (user signups + progress) lives in NeonDB, a serverless Postgres
+# provider — not on Render's local disk — so there's no persistent disk
+# to configure here, and the app is safe to redeploy or restart without
+# losing data.
+#
+# IMPORTANT: this file intentionally does NOT set a "rootDir". The app
+# is split into /frontend and /backend folders, and server.js finds the
+# frontend folder using a relative path (../frontend) from wherever
+# backend/server.js is running. Render's "Root Directory" setting
+# isolates only that folder at runtime, which would hide the sibling
+# /frontend folder — so instead we leave the root directory as the
+# whole repo, and just cd into backend/ for the build and start
+# commands below.
+#
+# You can also skip this file entirely and set things up by hand in the
+# Render dashboard — see README.md for step-by-step instructions (use
+# the same buildCommand/startCommand shown below).
+
+services:
+  - type: web
+    name: repolab
+    runtime: node
+    plan: free
+    buildCommand: cd backend && npm install
+    startCommand: node backend/server.js
+    envVars:
+      - key: SESSION_SECRET
+        generateValue: true   # Render creates a random secret for you
+      - key: DATABASE_URL
+        sync: false           # paste in your NeonDB connection string manually (it's a secret)
+      - key: GEMINI_API_KEY
+        sync: false           # you'll paste this in manually (it's a secret)

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title><%= guide.title %> — RepoLab</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <div class="page">
+    <%- include('partials/nav') %>
+
+    <main>
+      <div class="guide-header">
+        <div class="container">
+          <div class="guide-header-icon">
+            <% if (guide.icon.startsWith('/images/')) { %>
+              <img src="<%= guide.icon %>" alt="<%= guide.title %> icon">
+            <% } else { %>
+              <%= guide.icon %>
+            <% } %>
+          </div>
+          <h1><%= guide.title %></h1>
+          <p class="tagline"><%= guide.tagline %></p>
+          <div class="guide-header-meta">
+            <span>⏱ <%= guide.estTime %></span>
+            <span><%= guide.steps.length %> steps</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="container">
+        <p class="guide-intro"><%= guide.intro %></p>
+
+        <div class="bar-progress" id="progress-bar">[<%= '□'.repeat(guide.steps.length) %>]</div>
+        <div class="bar-progress-label" id="progress-label">
+          <% if (isLoggedIn) { %>
+            0 of <%= guide.steps.length %> steps complete
+          <% } else { %>
+            <a href="/signup">Sign up</a> to save your progress
+          <% } %>
+        </div>
+
+        <div class="os-tabs">
+          <button class="os-tab active" data-os="windows">Windows</button>
+          <button class="os-tab" data-os="macos">macOS</button>
+          <button class="os-tab" data-os="linux">Linux</button>
+        </div>
+
+        <div id="steps-container">
+          <% guide.steps.forEach(function(step, i) { %>
+            <div class="step" data-step-id="<%= step.id %>">
+              <div class="step-header">
+                <span class="step-index">[<%= i + 1 %>]</span>
+                <button class="step-checkbox" data-step-id="<%= step.id %>" aria-label="Mark step complete">✓</button>
+                <span class="step-title"><%= step.title %></span>
+              </div>
+              <div class="step-body">
+                <% ['windows', 'macos', 'linux'].forEach(function(osKey) {
+                  const osData = step.os[osKey];
+                  if (!osData) return;
+                %>
+                  <div class="os-content" data-os="<%= osKey %>" style="display: <%= osKey === 'windows' ? 'block' : 'none' %>;">
+                    <% if (osData.instructions) { %>
+                      <p class="step-instructions"><%= osData.instructions %></p>
+                    <% } %>
+
+                    <% if (osData.commands && osData.commands.length) { %>
+                      <div class="code-block">
+                        <button class="copy-btn" data-copy="<%= osData.commands.filter(c => !c.trim().startsWith('#')).join('\n') %>">copy</button>
+                        <% osData.commands.forEach(function(line) { %>
+                          <div class="code-line<%= line.trim().startsWith('#') ? ' comment' : '' %>"><%= line %></div>
+                        <% }); %>
+                      </div>
+                    <% } %>
+
+                    <% if (osData.link) { %>
+                      <a href="<%= osData.link.url %>" target="_blank" rel="noopener" class="step-link">→ <%= osData.link.label %></a>
+                    <% } %>
+                  </div>
+                <% }); %>
+
+                <% if (step.list) { %>
+                  <ul class="step-list">
+                    <% step.list.forEach(function(item) { %>
+                      <li><span class="ext-name"><%= item.name %></span><span class="ext-why"><%= item.why %></span></li>
+                    <% }); %>
+                  </ul>
+                <% } %>
+
+                <% if (step.note) { %>
+                  <div class="step-note"><%= step.note %></div>
+                <% } %>
+
+                <% if (step.verify) { %>
+                  <div class="step-verify">
+                    <strong>Verify it worked:</strong>
+                    <% if (step.verify.command) { %> run <code><%= step.verify.command %></code> — <% } %>
+                    <%= step.verify.expect %>
+                  </div>
+                <% } %>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+
+        <% if (guide.troubleshooting && guide.troubleshooting.length) { %>
+          <div class="tshoot">
+            <h2>Troubleshooting</h2>
+            <% guide.troubleshooting.forEach(function(t, i) { %>
+              <div class="tshoot-item">
+                <div class="tshoot-q"><%= t.problem %></div>
+                <div class="tshoot-a"><%= t.solution %></div>
+              </div>
+            <% }); %>
+          </div>
+        <% } %>
+      </div>
+    </main>
+
+    <%- include('partials/footer') %>
+  </div>
+
+  <%- include('partials/chat-widget') %>
+
+  <script>
+    window.GUIDE_SLUG = "<%= guide.slug %>";
+    window.IS_LOGGED_IN = <%= isLoggedIn ? 'true' : 'false' %>;
+    window.COMPLETED_STEPS = <%- JSON.stringify(completedSteps) %>;
+    window.TOTAL_STEPS = <%= guide.steps.length %>;
+  </script>
+  <script src="/js/guide.js"></script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<div id="chat-widget">
+  <button id="chat-toggle" aria-label="Open chat assistant">
+    <span class="chat-toggle-icon">$_</span>
+  </button>
+
+  <div id="chat-panel" class="chat-panel hidden">
+    <div class="chat-panel-header">
+      <span>RepoLab Assistant</span>
+      <button id="chat-close" aria-label="Close chat">×</button>
+    </div>
+    <div id="chat-messages" class="chat-messages">
+      <div class="chat-msg chat-msg-bot">
+        Hey! I'm here to help with installs, errors, or anything setup-related. What's going on?
+      </div>
+    </div>
+    <form id="chat-form" class="chat-form">
+      <input type="text" id="chat-input" placeholder="Ask something..." autocomplete="off" maxlength="2000">
+      <button type="submit" aria-label="Send">→</button>
+    </form>
+  </div>
+</div>
+
+<script src="/js/chat.js"></script>

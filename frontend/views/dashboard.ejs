@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Dashboard — RepoLab</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <div class="page">
+    <%- include('partials/nav') %>
+
+    <main>
+      <div class="container">
+        <div class="dash-header">
+          <h1>Your progress</h1>
+          <p>Pick up any guide where you left off.</p>
+        </div>
+
+        <div class="dash-overall">
+          <div class="dash-overall-top">
+            <span>Overall</span>
+            <span><%= totalDone %>/<%= totalSteps %> steps · <%= overallPercent %>%</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" style="width: <%= overallPercent %>%"></div>
+          </div>
+        </div>
+
+        <div class="dash-grid">
+          <% if (guideStats.length === 0) { %>
+            <div class="dash-card-empty">No guides yet — <a href="/guides">browse the catalog</a>.</div>
+          <% } %>
+          <% guideStats.forEach(function(g) { %>
+            <a href="/guides/<%= g.slug %>" class="dash-card<%= g.percent === 100 ? ' done' : '' %>" style="text-decoration:none;">
+              <div class="dash-card-icon">
+                <% if (g.icon.startsWith('/images/')) { %>
+                  <img src="<%= g.icon %>" alt="<%= g.title %> icon">
+                <% } else { %>
+                  <%= g.icon %>
+                <% } %>
+              </div>
+              <div class="dash-card-body">
+                <h3><%= g.title %></h3>
+                <p><%= g.done %> of <%= g.total %> steps · <%= g.tagline %></p>
+              </div>
+              <div class="dash-card-pct"><%= g.percent %>%</div>
+            </a>
+          <% }); %>
+        </div>
+      </div>
+    </main>
+
+    <%- include('partials/footer') %>
+  </div>
+
+  <%- include('partials/chat-widget') %>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Guides — RepoLab</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <div class="page">
+    <%- include('partials/nav') %>
+
+    <main>
+      <div class="container">
+        <div class="guide-header" style="border-bottom:none; padding-bottom:0;">
+          <h1>All guides</h1>
+          <p class="tagline">Pick a tool. Follow the steps. Check them off as you go.</p>
+        </div>
+
+        <div class="guides-grid">
+          <% guides.forEach(function(g) { %>
+            <a href="/guides/<%= g.slug %>" class="guide-card">
+              <div class="guide-card-top">
+                <div class="guide-card-icon">
+                  <% if (g.icon.startsWith('/images/')) { %>
+                    <img src="<%= g.icon %>" alt="<%= g.title %> icon">
+                  <% } else { %>
+                    <%= g.icon %>
+                  <% } %>
+                </div>
+                <h3><%= g.title %></h3>
+              </div>
+              <p><%= g.tagline %></p>
+              <div class="guide-card-meta">
+                <span><%= g.estTime %></span>
+                <% if (progressMap[g.slug]) { %>
+                  <span><%= progressMap[g.slug].done %>/<%= progressMap[g.slug].total %> steps</span>
+                <% } else { %>
+                  <span><%= g.steps.length %> steps</span>
+                <% } %>
+              </div>
+              <% if (progressMap[g.slug]) { %>
+                <div class="progress-track">
+                  <div class="progress-fill" style="width: <%= Math.round((progressMap[g.slug].done / progressMap[g.slug].total) * 100) %>%"></div>
+                </div>
+              <% } %>
+            </a>
+          <% }); %>
+        </div>
+      </div>
+    </main>
+
+    <%- include('partials/footer') %>
+  </div>
+
+  <%- include('partials/chat-widget') %>
+</body>
+</html>
