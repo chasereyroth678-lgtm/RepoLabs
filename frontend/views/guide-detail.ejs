@@ -30,7 +30,7 @@
       <div class="container">
         <p class="guide-intro"><%= guide.intro %></p>
 
-        <div class="bar-progress" id="progress-bar">[<%= '□'.repeat(guide.steps.length) %>]</div>
+       <div class="bar-progress" id="progress-bar">[<%= '-'.repeat(guide.steps.length) %>]</div>
         <div class="bar-progress-label" id="progress-label">
           <% if (isLoggedIn) { %>
             0 of <%= guide.steps.length %> steps complete
