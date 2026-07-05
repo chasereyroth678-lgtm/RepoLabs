@@ -47,7 +47,7 @@
     const bar = document.getElementById('progress-bar');
     const label = document.getElementById('progress-label');
     if (!bar) return;
-    const filled = '■'.repeat(completed.size) + '□'.repeat(Math.max(0, total - completed.size));
+    const filled = '#'.repeat(completed.size) + '-'.repeat(Math.max(0, total - completed.size));
     bar.textContent = `[${filled}]`;
     if (isLoggedIn && label) {
       label.textContent = `${completed.size} of ${total} steps complete`;
